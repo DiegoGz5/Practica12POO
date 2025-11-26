@@ -2,6 +2,7 @@ package battleship;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Tablero {
 
@@ -15,13 +16,13 @@ public class Tablero {
     private void inicializar() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                grid[i][j] = '~';   // agua
+                grid[i][j] = '~'; // Agua
             }
         }
     }
 
+    // Colocación manual (opcional)
     public boolean colocarBarco(int fila, int col, int tamaño, boolean horizontal) {
-        // Validaciones
         if (horizontal && col + tamaño > 10) return false;
         if (!horizontal && fila + tamaño > 10) return false;
 
@@ -29,11 +30,9 @@ public class Tablero {
         for (int i = 0; i < tamaño; i++) {
             int f = fila + (horizontal ? 0 : i);
             int c = col + (horizontal ? i : 0);
-
             if (grid[f][c] != '~') return false;
         }
 
-        // Colocar barco
         Barco barco = new Barco(tamaño);
         barcos.add(barco);
 
@@ -46,16 +45,32 @@ public class Tablero {
         return true;
     }
 
+    // Colocación automática de los 5 barcos clásicos
+    public void colocarBarcosAutomaticamente() {
+        int[] tamaños = {5, 4, 3, 3, 2}; // Portaaviones, Acorazado, Crucero, Submarino, Destructor
+        Random rand = new Random();
+
+        for (int tamaño : tamaños) {
+            boolean colocado = false;
+            while (!colocado) {
+                boolean horizontal = rand.nextBoolean();
+                int fila = rand.nextInt(10);
+                int col = rand.nextInt(10);
+                colocado = colocarBarco(fila, col, tamaño, horizontal);
+            }
+        }
+    }
+
     public String disparar(int fila, int col) {
         char celda = grid[fila][col];
 
         switch (celda) {
             case '~':
-                grid[fila][col] = 'O'; // agua fallada
+                grid[fila][col] = 'O'; // Agua fallada
                 return "agua";
 
             case 'B':
-                grid[fila][col] = 'X'; // impacto
+                grid[fila][col] = 'X'; // Impacto
                 registrarImpacto();
                 return "impacto";
 
@@ -84,61 +99,34 @@ public class Tablero {
         return true;
     }
 
-    public char[][] getGrid() {
-        return grid;
-    }
-
-public void mostrarTablero() {
-    System.out.print("  ");
-    for (int i = 0; i < 10; i++) System.out.print(i + " ");
-    System.out.println();
-    
-    for (int i = 0; i < 10; i++) {
-        System.out.print(i + " ");
-        for (int j = 0; j < 10; j++) {
-            System.out.print(grid[i][j] + " ");
-        }
-        System.out.println();
-    }
-    System.out.println("\nLeyenda: ~=Agua, B=Barco, X=Impacto, O=Fallo");
-    }
-
+    // Devuelve el tablero propio (con barcos visibles)
     public void mostrarTableroPropio() {
-    System.out.print("  ");
-    for (int i = 0; i < 10; i++) System.out.print(i + " ");
-    System.out.println();
-    
-    for (int i = 0; i < 10; i++) {
-        System.out.print(i + " ");
-        for (int j = 0; j < 10; j++) {
-            System.out.print(grid[i][j] + " ");
-        }
-        System.out.println();
+        System.out.println("\n=== TU TABLERO ===");
+        mostrarTablero(true);
     }
-    System.out.println("\nLeyenda: ~=Agua, B=Barco, X=Impacto, O=Fallo");
-}
 
-public void mostrarTableroEnemigo() {
-    System.out.print("  ");
-    for (int i = 0; i < 10; i++) System.out.print(i + " ");
-    System.out.println();
-    
-    for (int i = 0; i < 10; i++) {
-        System.out.print(i + " ");
-        for (int j = 0; j < 10; j++) {
-            char c = grid[i][j];
-            if (c == 'X' || c == 'O') {
+    // Devuelve el tablero enemigo (sin barcos visibles)
+    public void mostrarTableroEnemigo() {
+        System.out.println("\n=== TABLERO ENEMIGO ===");
+        mostrarTablero(false);
+    }
+
+    private void mostrarTablero(boolean mostrarBarcos) {
+        System.out.print("  ");
+        for (int i = 0; i < 10; i++) System.out.print(i + " ");
+        System.out.println();
+
+        for (int i = 0; i < 10; i++) {
+            System.out.print(i + " ");
+            for (int j = 0; j < 10; j++) {
+                char c = grid[i][j];
+                if (!mostrarBarcos && c == 'B') c = '~';
                 System.out.print(c + " ");
-            } else {
-                System.out.print("? ");
             }
+            System.out.println();
         }
-        System.out.println();
+
+        System.out.println("Leyenda: ~=Agua, B=Barco, X=Impacto, O=Fallo");
     }
-    System.out.println("\nLeyenda: ?=Desconocido, X=Impacto, O=Fallo");
 }
-
-
-}
-
 
