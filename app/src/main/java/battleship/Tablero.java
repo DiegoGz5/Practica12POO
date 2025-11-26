@@ -128,5 +128,12 @@ public class Tablero {
 
         System.out.println("Leyenda: ~=Agua, B=Barco, X=Impacto, O=Fallo");
     }
+
+
+    public char[][] getGrid() {
+    return grid;
+    
+    }
+
 }
 

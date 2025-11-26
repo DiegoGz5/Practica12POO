@@ -21,22 +21,28 @@ public class BattleshipUI {
         int opcion = sc.nextInt();
 
         switch (opcion) {
-            case 1:
-                System.out.println("Interfaz de consola próximamente...");
-                break;
+             case 1:
+                Tablero t1 = new Tablero();
+                Tablero t2 = new Tablero();
+                t1.colocarBarcosAutomaticamente();
+                t2.colocarBarcosAutomaticamente();
+
+                 new BattleshipGUI(t1, t2);
+                 break;
+
             case 2:
                 System.out.println("Iniciando juego en modo prueba (consola)...\n");
 
                 // Tableros y juego como antes
-                Tablero t1 = new Tablero();
-                Tablero t2 = new Tablero();
+                Tablero t3 = new Tablero();
+                Tablero t4 = new Tablero();
 
                 // Colocar barcos automáticamente
-                t1.colocarBarcosAutomaticamente();
-                t2.colocarBarcosAutomaticamente();
+                t3.colocarBarcosAutomaticamente();
+                t4.colocarBarcosAutomaticamente();
 
                 // Iniciar juego
-                Juego game = new Juego(t1, t2);
+                Juego game = new Juego(t3, t4);
                 game.iniciar();
                 break;
             default:
@@ -45,4 +51,5 @@ public class BattleshipUI {
 
         sc.close();
     }
+    
 }
