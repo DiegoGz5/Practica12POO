@@ -87,4 +87,58 @@ public class Tablero {
     public char[][] getGrid() {
         return grid;
     }
+
+public void mostrarTablero() {
+    System.out.print("  ");
+    for (int i = 0; i < 10; i++) System.out.print(i + " ");
+    System.out.println();
+    
+    for (int i = 0; i < 10; i++) {
+        System.out.print(i + " ");
+        for (int j = 0; j < 10; j++) {
+            System.out.print(grid[i][j] + " ");
+        }
+        System.out.println();
+    }
+    System.out.println("\nLeyenda: ~=Agua, B=Barco, X=Impacto, O=Fallo");
+    }
+
+    public void mostrarTableroPropio() {
+    System.out.print("  ");
+    for (int i = 0; i < 10; i++) System.out.print(i + " ");
+    System.out.println();
+    
+    for (int i = 0; i < 10; i++) {
+        System.out.print(i + " ");
+        for (int j = 0; j < 10; j++) {
+            System.out.print(grid[i][j] + " ");
+        }
+        System.out.println();
+    }
+    System.out.println("\nLeyenda: ~=Agua, B=Barco, X=Impacto, O=Fallo");
 }
+
+public void mostrarTableroEnemigo() {
+    System.out.print("  ");
+    for (int i = 0; i < 10; i++) System.out.print(i + " ");
+    System.out.println();
+    
+    for (int i = 0; i < 10; i++) {
+        System.out.print(i + " ");
+        for (int j = 0; j < 10; j++) {
+            char c = grid[i][j];
+            if (c == 'X' || c == 'O') {
+                System.out.print(c + " ");
+            } else {
+                System.out.print("? ");
+            }
+        }
+        System.out.println();
+    }
+    System.out.println("\nLeyenda: ?=Desconocido, X=Impacto, O=Fallo");
+}
+
+
+}
+
+

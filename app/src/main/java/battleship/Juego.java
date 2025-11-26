@@ -12,36 +12,42 @@ public class Juego {
         this.jugador2 = t2;
     }
 
-    public void iniciar() {
-        Scanner sc = new Scanner(System.in);
+public void iniciar() {
+    Scanner sc = new Scanner(System.in);
 
-        System.out.println("Inicia la batalla naval!");
+    System.out.println("Inicia la batalla naval!");
 
-        while (true) {
-            System.out.println("\nTurno del Jugador 1:");
-            turno(sc, jugador2);
-            if (jugador2.todosHundidos()) {
-                System.out.println("¡Jugador 1 gana!");
-                break;
-            }
+    while (true) {
+        turno(sc, jugador2, jugador1, "Jugador 1");
+        if (jugador2.todosHundidos()) {
+            System.out.println("¡Jugador 1 gana!");
+            break;
+        }
 
-            System.out.println("\nTurno del Jugador 2:");
-            turno(sc, jugador1);
-            if (jugador1.todosHundidos()) {
-                System.out.println("¡Jugador 2 gana!");
-                break;
-            }
+        turno(sc, jugador1, jugador2, "Jugador 2");
+        if (jugador1.todosHundidos()) {
+            System.out.println("¡Jugador 2 gana!");
+            break;
         }
     }
+}
 
-    private void turno(Scanner sc, Tablero enemigo) {
-        System.out.print("Fila: ");
-        int fila = sc.nextInt();
 
-        System.out.print("Columna: ");
-        int col = sc.nextInt();
+private void turno(Scanner sc, Tablero enemigo, Tablero propio, String nombreJugador) {
+    System.out.println("\n=== Tablero de " + nombreJugador + " ===");
+    propio.mostrarTableroPropio();
 
-        String resultado = enemigo.disparar(fila, col);
-        System.out.println("Resultado: " + resultado);
-    }
+    System.out.println("\n=== Tablero enemigo ===");
+    enemigo.mostrarTableroEnemigo();
+
+    System.out.print("Fila: ");
+    int fila = sc.nextInt();
+
+    System.out.print("Columna: ");
+    int col = sc.nextInt();
+
+    String resultado = enemigo.disparar(fila, col);
+    System.out.println("Resultado: " + resultado);
+}
+
 }
