@@ -1,5 +1,6 @@
 package battleship;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Juego {
@@ -55,6 +56,22 @@ public class Juego {
             } else {
                 System.out.println("Ya disparaste ahí, intenta otra posición.");
             }
+        }
+    }
+
+        // Método nuevo para pruebas unitarias
+    public int jugarConSecuencia(List<int[]> secuenciaJugador1, List<int[]> secuenciaJugador2) {
+        int turno = 0;
+        while (true) {
+            int[] disparo1 = secuenciaJugador1.get(turno);
+            jugador2.disparar(disparo1[0], disparo1[1]);
+            if (jugador2.todosHundidos()) return 1;
+
+            int[] disparo2 = secuenciaJugador2.get(turno);
+            jugador1.disparar(disparo2[0], disparo2[1]);
+            if (jugador1.todosHundidos()) return 2;
+
+            turno++;
         }
     }
 }

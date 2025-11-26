@@ -11,6 +11,7 @@ public class BattleshipGUI {
 
     private Tablero tableroJugador1, tableroJugador2;
     private boolean turnoJugador1 = true; // true = jugador1, false = jugador2
+    private boolean juegoTerminado = false;
 
     public BattleshipGUI(Tablero t1, Tablero t2) {
         this.tableroJugador1 = t1;
@@ -45,36 +46,35 @@ public class BattleshipGUI {
                 JButton b = new JButton("~");
                 int fila = i;
                 int col = j;
+
                 b.addActionListener(e -> {
+                    if (juegoTerminado) return; // Bloquear si ya terminó
+
                     Tablero jugadorActual = turnoJugador1 ? tableroJugador1 : tableroJugador2;
                     Tablero enemigo = turnoJugador1 ? tableroJugador2 : tableroJugador1;
 
-                    // Solo dispara si es el turno correspondiente
-                    if ((turnoJugador1 && jugadorActual == tableroJugador1) ||
-                        (!turnoJugador1 && jugadorActual == tableroJugador2)) {
+                    String resultado = enemigo.disparar(fila, col);
 
-                        String resultado = enemigo.disparar(fila, col);
+                    if (resultado.equals("impacto")) b.setText("X");
+                    else if (resultado.equals("agua")) b.setText("O");
+                    else if (resultado.equals("repetido")) return;
 
-                        // Mostrar impacto o fallo en la interfaz
-                        if (resultado.equals("impacto")) {
-                            b.setText("X");
-                        } else if (resultado.equals("agua")) {
-                            b.setText("O");
-                        }
+                    actualizarVisibilidadTableros();
 
-                        // Revisar victoria
-                        if (enemigo.todosHundidos()) {
-                            JOptionPane.showMessageDialog(frame,
-                                    "¡Jugador " + (turnoJugador1 ? "1" : "2") + " gana!");
-                            frame.dispose();
-                            return;
-                        }
-
-                        // Alternar turno
-                        turnoJugador1 = !turnoJugador1;
-                        actualizarVisibilidadTableros();
+                    // Verificar victoria
+                    if (enemigo.todosHundidos()) {
+                        JOptionPane.showMessageDialog(frame,
+                                "¡Jugador " + (turnoJugador1 ? "1" : "2") + " gana!");
+                        juegoTerminado = true;
+                        deshabilitarBotones();
+                        return;
                     }
+
+                    // Cambiar turno
+                    turnoJugador1 = !turnoJugador1;
+                    actualizarVisibilidadTableros();
                 });
+
                 botonesEnemigo[i][j] = b;
                 panelEnemigo.add(b);
             }
@@ -89,23 +89,30 @@ public class BattleshipGUI {
     }
 
     private void actualizarVisibilidadTableros() {
-        // Mostrar solo el tablero propio
         Tablero jugadorActual = turnoJugador1 ? tableroJugador1 : tableroJugador2;
         Tablero enemigo = turnoJugador1 ? tableroJugador2 : tableroJugador1;
 
+        // Actualizar tablero propio
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                // Tablero propio
-                char c = jugadorActual.getGrid()[i][j];
-                botonesJugador[i][j].setText("" + c);
+                botonesJugador[i][j].setText("" + jugadorActual.getGrid()[i][j]);
+            }
+        }
 
-                // Tablero enemigo: mostrar solo X/O
-                char ce = enemigo.getGrid()[i][j];
-                if (ce == 'X' || ce == 'O') {
-                    botonesEnemigo[i][j].setText("" + ce);
-                } else {
-                    botonesEnemigo[i][j].setText("~");
-                }
+        // Actualizar tablero enemigo: solo X/O visibles
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                char c = enemigo.getGrid()[i][j];
+                if (c == 'X' || c == 'O') botonesEnemigo[i][j].setText("" + c);
+                else botonesEnemigo[i][j].setText("~");
+            }
+        }
+    }
+
+    private void deshabilitarBotones() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                botonesEnemigo[i][j].setEnabled(false);
             }
         }
     }
