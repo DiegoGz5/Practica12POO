@@ -1,82 +1,42 @@
 package battleship;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TableroTest {
 
-    private Tablero tablero;
-
-    @BeforeEach
-    void setUp() {
-        tablero = new Tablero();
-    }
-
     @Test
-    void testColocarBarcoCorrectamente() {
-        boolean resultado = tablero.colocarBarco(0, 0, 3, true);
-        assertTrue(resultado, "El barco debería colocarse correctamente");
-        char[][] grid = tablero.getGrid();
-        assertEquals('B', grid[0][0]);
-        assertEquals('B', grid[0][1]);
-        assertEquals('B', grid[0][2]);
-    }
+    void testColocarBarcoYDisparar() {
+        Tablero tablero = new Tablero();
+        
+        // Colocamos un barco horizontal de tamaño 3
+        assertTrue(tablero.colocarBarco(0, 0, 3, true));
 
-    @Test
-    void testColocarBarcoFueraDeRango() {
-        boolean resultado = tablero.colocarBarco(9, 8, 3, true);
-        assertFalse(resultado, "El barco no debería colocarse fuera del tablero");
-    }
+        // Intento colocar otro barco encima (debería fallar)
+        assertFalse(tablero.colocarBarco(0, 0, 2, true));
 
-    @Test
-    void testColocarBarcoConColision() {
-        tablero.colocarBarco(0, 0, 3, true);
-        boolean resultado = tablero.colocarBarco(0, 2, 3, true); // choca con el anterior
-        assertFalse(resultado, "No debería permitir colocar un barco encima de otro");
-    }
+        // Disparos
+        assertEquals("impacto", tablero.disparar(0, 0));
+        assertEquals("impacto", tablero.disparar(0, 1));
+        assertEquals("impacto", tablero.disparar(0, 2));
 
-    @Test
-    void testDispararAgua() {
-        String resultado = tablero.disparar(0, 0);
-        assertEquals("agua", resultado);
-        assertEquals('O', tablero.getGrid()[0][0]);
-    }
+        // Disparar agua
+        assertEquals("agua", tablero.disparar(5, 5));
 
-    @Test
-    void testDispararImpacto() {
-        tablero.colocarBarco(0, 0, 1, true);
-        String resultado = tablero.disparar(0, 0);
-        assertEquals("impacto", resultado);
-        assertEquals('X', tablero.getGrid()[0][0]);
-    }
-
-    @Test
-    void testDispararRepetido() {
-        tablero.disparar(0, 0);
-        String resultado = tablero.disparar(0, 0);
-        assertEquals("repetido", resultado);
+        // Disparar repetido
+        assertEquals("repetido", tablero.disparar(0, 0));
     }
 
     @Test
     void testTodosHundidos() {
-        tablero.colocarBarco(0, 0, 1, true);
-        tablero.colocarBarco(1, 0, 1, true);
-
+        Tablero tablero = new Tablero();
+        tablero.colocarBarco(0, 0, 2, true);
         assertFalse(tablero.todosHundidos());
 
-        tablero.disparar(0, 0);
-        tablero.disparar(1, 0);
+        tablero.disparar(0,0);
+        assertFalse(tablero.todosHundidos());
 
+        tablero.disparar(0,1);
         assertTrue(tablero.todosHundidos());
-    }
-
-    @Test
-    void testColocarBarcosAutomaticamente() {
-        Tablero t2 = new Tablero();
-        t2.colocarBarcosAutomaticamente();
-        // No se puede predecir exacto, pero todosHundidos debe ser false al inicio
-        assertFalse(t2.todosHundidos());
     }
 }

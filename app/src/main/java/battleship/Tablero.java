@@ -135,5 +135,45 @@ public class Tablero {
     
     }
 
+    public void mostrar() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            System.out.print(grid[i][j] + " ");
+        }
+        System.out.println();
+    }
+}
+
+public void mostrarOculto() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (grid[i][j] == 'B')
+                System.out.print("~ ");
+            else
+                System.out.print(grid[i][j] + " ");
+        }
+        System.out.println();
+    }
+}
+
+public void marcarImpacto(int f, int c) {
+    grid[f][c] = 'X';
+}
+
+public void marcarAgua(int f, int c) {
+    grid[f][c] = 'O';
+}
+
+public boolean recibirDisparo(int f, int c) {
+    if (grid[f][c] == 'B') {
+        grid[f][c] = 'X';
+        return true;
+    }
+    if (grid[f][c] == '~') {
+        grid[f][c] = 'O';
+    }
+    return false;
+}
+
 }
 

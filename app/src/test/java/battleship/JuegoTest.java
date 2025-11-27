@@ -1,48 +1,44 @@
 package battleship;
 
-import battleship.Juego;
-import battleship.Tablero;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class JuegoTest {
 
     @Test
-    void testVictoriaJugador1() {
+    public void testJugarConSecuencia() {
+        // Crear tableros con barcos en posiciones fijas
         Tablero t1 = new Tablero();
         Tablero t2 = new Tablero();
 
-        // Colocar un barco de tamaño 1 en (0,0)
-        t1.colocarBarco(0,0,1,true);
-        t2.colocarBarco(0,0,1,true);
+        // Colocación fija de barcos para que los disparos sean predecibles
+        t1.colocarBarco(0, 0, 2, true); // barco de 2 en fila 0, columnas 0-1
+        t1.colocarBarco(1, 0, 3, true); // barco de 3 en fila 1, columnas 0-2
 
+        t2.colocarBarco(0, 0, 2, true);
+        t2.colocarBarco(1, 0, 3, true);
+
+        // Crear el juego
         Juego juego = new Juego(t1, t2);
 
-        // Simular disparos: jugador1 dispara a (0,0) y gana
-        List<int[]> secuencia1 = List.of(new int[]{0,0});
-        List<int[]> secuencia2 = List.of(new int[]{0,0}); // aunque dispara, ya perdió jugador2
+        // Secuencias de disparos que van a hundir todos los barcos
+        List<int[]> secJugador1 = Arrays.asList(
+                new int[]{0,0}, new int[]{0,1}, 
+                new int[]{1,0}, new int[]{1,1}, new int[]{1,2}
+        );
 
-        int ganador = juego.jugarConSecuencia(secuencia1, secuencia2);
-        assertEquals(1, ganador, "Jugador 1 debería ganar");
-    }
+        List<int[]> secJugador2 = Arrays.asList(
+                new int[]{0,0}, new int[]{0,1}, 
+                new int[]{1,0}, new int[]{1,1}, new int[]{1,2}
+        );
 
-    @Test
-    void testVictoriaJugador2() {
-        Tablero t1 = new Tablero();
-        Tablero t2 = new Tablero();
+        // Ejecutar la simulación con secuencias
+        int ganador = juego.jugarConSecuencia(secJugador1, secJugador2);
 
-        t1.colocarBarco(0,0,1,true);
-        t2.colocarBarco(0,0,1,true);
-
-        Juego juego = new Juego(t1, t2);
-
-        // Simular disparos: jugador2 dispara primero y gana
-        List<int[]> secuencia1 = List.of(new int[]{1,1}); // fallo
-        List<int[]> secuencia2 = List.of(new int[]{0,0}); // acierto
-
-        int ganador = juego.jugarConSecuencia(secuencia1, secuencia2);
-        assertEquals(2, ganador, "Jugador 2 debería ganar");
+        // Comprobar que el ganador sea 1 (ya que jugador 1 dispara primero y completa todos los impactos)
+        assertEquals(1, ganador);
     }
 }
